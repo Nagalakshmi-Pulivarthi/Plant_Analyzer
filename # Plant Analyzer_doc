@@ -1,0 +1,38 @@
+# Plant Analyzer
+## overview 
+  we are building aw web application name "Plant Leaf Analyzer". This application should be  a prototype for my Portfolio project. Application takes the plant leaf image from the user and diagnosis the plant and provide the problem and Recommandations and also a final summary along with the Healthy Plant image. 
+
+## Initial Instructions
+  - I want you to play as a full stack developr role.
+  - I will supplying you with an initial prompt with a lot of information about the application.
+  - Your first task should be review the instructions and confirm that you understand the context.
+  - Do not code yet, i will confirm you with the first step.
+
+## Functionality
+
+   1. Upload image
+   - Application provide an option for User to upload the image to diagnose the problem
+   
+   2. Plant leaf diagnosis:
+   - Once the user submit the plant image, Application will make a call to LLM to provide plant information, any observations
+
+   3. Problem finding and recommandation
+   -  Once the system receives the plant information and observatiobs, It will make another LLM  call to identify the problem and provide recommandations
+
+   4. Healthy Plant
+   - once the app receives the problem and recommendations, It will make another LLM  call to get the image of the healthy plant how does it supposed to look like
+
+   5. Response To end User:
+    - Once the app receives all the information, it will present all the information to the end user in a appealing manner 
+
+
+## Coding Style
+  - Use Python for the application 
+
+
+# API Calls
+  Here are the calls to be made for each of the scenarios. I will provide the sample code along with system prompt for reference along with this. API keys should be maintained in the config file
+ - Leaf Observations: OpenAI
+ - Problem Identification and Recommendations : Google AI
+ - Healthy Image: Google AI
+ 

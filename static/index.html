@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Analyzer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/styles.css?v=3">
+</head>
+<body>
+    <header class="header">
+        <div class="site-title">Plant Analyzer</div>
+        <div class="site-caption">Upload a plant leaf image to get instant diagnosis and care recommendations</div>
+    </header>
+
+    <div class="container">
+        <!-- Combined Upload and Plant Details Section -->
+        <div class="main-content-wrapper">
+            <div class="main-content">
+                <!-- Left Side: Image Upload -->
+                <div class="left-content">
+                    <div class="image-upload-section">
+                        <div class="image-container">
+                            <div class="image-placeholder" id="imagePlaceholder" role="button" tabindex="0" aria-label="Upload plant image">
+                                <div class="upload-icon">📤</div>
+                                <div class="upload-text">
+                                    <strong>Drag & drop your plant image here</strong>
+                                    <span class="upload-hint">or click to browse</span>
+                                </div>
+                                <div class="file-hint">Supports JPG, PNG, WEBP (max 10MB)</div>
+                            </div>
+                            <div id="imagePreview" class="image-preview-container" style="display: none;">
+                                <img id="previewImage" src="" alt="Plant image preview" title="Click to choose another image">
+                                <div id="loadingIndicator" class="loading-indicator-inline" style="display: none;">
+                                    <div class="spinner-small"></div>
+                                    <p>Analyzing your plant...</p>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png,image/webp" style="display: none;" aria-label="File input">
+                        <!-- Skeleton Screen for Loading -->
+                        <div id="skeletonScreen" class="skeleton-screen" style="display: none;">
+                            <div class="skeleton-item skeleton-field"></div>
+                            <div class="skeleton-item skeleton-field"></div>
+                            <div class="skeleton-item skeleton-field-short"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Side: Plant Analysis -->
+                <div class="right-content" id="rightContent" style="display: none;">
+                    <div class="plant-analysis-form">
+                        <div class="field-tile">
+                            <label class="field-label">Plant Name:</label>
+                            <div class="field-value">
+                                <span id="plantName" class="empty-state">Not detected</span>
+                            </div>
+                        </div>
+                        <div class="field-tile">
+                            <label class="field-label">Category/Family:</label>
+                            <div class="field-value">
+                                <span id="categoryFamily" class="empty-state">No data available</span>
+                            </div>
+                        </div>
+                        <div class="field-tile">
+                            <label class="field-label">Suitability:</label>
+                            <div class="field-value">
+                                <span id="suitability" class="empty-state">No data available</span>
+                            </div>
+                        </div>
+                        <div class="field-tile">
+                            <label class="field-label">Health Status:</label>
+                            <div class="field-value">
+                                <span id="healthStatus" class="empty-state">Not analyzed</span>
+                                <span id="healthStatusBadge" class="health-status-badge" style="display: none;"></span>
+                            </div>
+                        </div>
+                        <div class="field-tile">
+                            <label class="field-label">Bacteria/Fungus:</label>
+                            <div class="field-value">
+                                <span id="bacteriaFungus" class="empty-state">None detected</span>
+                            </div>
+                        </div>
+                        <div class="field-tile">
+                            <label class="field-label">Nutrient Deficiency:</label>
+                            <div class="field-value">
+                                <span id="nutrientDeficiency" class="empty-state">No signs detected</span>
+                            </div>
+                        </div>
+                        <div class="field-tile">
+                            <label class="field-label">Pest Damage:</label>
+                            <div class="field-value">
+                                <span id="pestDamage" class="empty-state">No damage detected</span>
+                            </div>
+                        </div>
+                        <div class="field-tile">
+                            <label class="field-label">Water/Sunlight Stress:</label>
+                            <div class="field-value">
+                                <span id="waterSunlightStress" class="empty-state">No stress detected</span>
+                            </div>
+                        </div>
+                        <div class="field-tile">
+                            <label class="field-label">Damage Type:</label>
+                            <div class="field-value">
+                                <span id="damageType" class="empty-state">No damage detected</span>
+                            </div>
+                        </div>
+                        <!-- Problem Description Section -->
+                        <div class="field-tile field-tile-full" id="problemSection">
+                            <div class="problem-description-box" id="problemDescription">
+                                <span class="placeholder-text empty-state">No problems detected</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Confidence Warning Banner -->
+        <div id="confidenceWarning" class="confidence-warning" style="display: none;">
+            <span class="confidence-warning-icon">⚠</span>
+            <div class="confidence-warning-text">
+                <strong>AI is having difficulty identifying this plant with certainty.</strong>
+                <span id="confidenceWarningDetail">This may be due to image angle, lighting, or an uncommon species. Try uploading a clearer, closer image of a single leaf for better results.</span>
+            </div>
+            <span id="confidenceBadge" class="confidence-badge"></span>
+        </div>
+
+        <!-- Recommendations Section -->
+        <div class="recommendations-section" id="recommendationsSection" style="display: none;">
+            <h3 class="section-heading">Recommendations</h3>
+            <div class="recommendations-grid" id="recommendationsGrid">
+            </div>
+        </div>
+
+        <!-- Severity Assessment Section (only shown when plant has issues) -->
+        <div class="severity-section" id="severitySection" style="display: none;">
+            <h3 class="section-heading">Severity Assessment</h3>
+            <div class="severity-container">
+                <div class="severity-score-card">
+                    <div class="severity-score-number" id="severityScore">-</div>
+                    <div class="severity-score-label" id="severityLabel">-</div>
+                    <div class="severity-prognosis" id="severityPrognosis">-</div>
+                </div>
+                <div class="severity-details">
+                    <div class="severity-block">
+                        <div class="severity-block-title">Priority Actions</div>
+                        <ul class="priority-actions-list" id="priorityActionsList"></ul>
+                    </div>
+                    <div class="severity-block">
+                        <div class="severity-block-title">Recovery Timeline</div>
+                        <div class="recovery-timeline-text" id="recoveryTimeline">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Summary Section -->
+        <div class="bottom-section" id="bottomSection" style="display: none;">
+            <h3 class="section-heading">Summary</h3>
+            <div class="summary-container" id="summaryContainer">
+                <div class="summary-section" id="summarySection" style="display: none;">
+                    <div class="summary-box" id="summaryBox">
+                        <span class="placeholder-text empty-state">No summary available</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+    </div>
+
+    <script src="/static/app.js?v=7"></script>
+</body>
+</html>
